@@ -2,4 +2,6 @@
     width:800px;
     height:600px;
     background: #ecd100;
+    display: flex;
+
 }
