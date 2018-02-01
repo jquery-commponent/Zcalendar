@@ -26,8 +26,6 @@
         calendarShow : function(){
             var $this = this;
             var $calendar = $this.$element.find($this.ops.calendarBody);
-            var calendarWidth = $calendar.innerWidth();
-            var calendarHeight = $calendar.innerHeight();
             if($this.ops.calendarDirection == "vertical"){
                 $calendar.css({
                     display : "flex"
@@ -41,6 +39,7 @@
                 }
                 //插入日历主体信息
                 $this._fillingDate();
+                $this._fillingHeader();
             }else if($this.ops.calendarDirection == "horizontal"){
                 $calendar.css({
                     display : "flex",
@@ -55,20 +54,24 @@
                 }
                 //插入日历主体信息
                 $this._fillingDate();
+                $this._fillingHeader();
             }
         },
-
+        /**
+         * @private
+         * 填充主体部分的日历
+         */
         _fillingDate : function(){
             var $this = this;
             var y = $this.whatDay;
-            console.log(y);
+            //填充上个月的部分
             for(var i=1; i<y; i++){
-                var dateDiv = "<div>0</div>";
+                var dateDiv = "<div class='"+ $this.ops.dateDivClass +"'></div>";
                 $this.$element.find($this.ops.calendarBody).find("#week-"+i).append(dateDiv);
             }
+            //填充当前展示月的部分
             for(var k=1; k<=$this.monthDay[$this.Month-1]; k++){
-                console.log(k);
-                var dateDiv = "<div>"+ k +"</div>";
+                var dateDiv = "<div class='"+ $this.ops.dateDivClass +"'>"+ k +"</div>";
                 $this.$element.find($this.ops.calendarBody).find("#week-"+y).append(dateDiv);
                 if(y==7){
                     y=1;
@@ -76,6 +79,15 @@
                     y++;
                 }
             }
+        },
+        /**
+         * @private
+         * 头部信息的显示
+         */
+        _fillingHeader : function(){
+            var $this = this;
+            var $header = $this.$element.find($this.ops.calendarHeader);
+            $header.text($this.Year+"年"+$this.Month+"月");
         },
         /**
          * @private
@@ -147,13 +159,14 @@
          */
         _whatDay : function () {
             var $this =this;
-            var date = new Date($this.Year,$this.Month,1);
+            var date = new Date($this.Year,$this.Month-1,1);
             $this.whatDay = date.getDay() == 0 ? 7 : date.getDay();
         },
 
         /**
          * @private
          * 判断当前展示月在日历中显示几行
+         * 暂时不用，好久好久之前写的，忘了当时为什么要写这个方法，手动尴尬
          */
         _whatRow : function () {
             var $this = this;
@@ -172,6 +185,8 @@
         nowDate : "" ,                      //日历中显示的当前日期
         calendarDirection : "vertical",             //日历显示方向
         calendarBody : "#calendarBody",   //日历主体展示部分容器
-        WeekHeaderClass : "week-header"       //日历头部的星期块的样式
+        calendarHeader : "#calendarHeader", //日历的头部信息部分，包括当前展示时间的年月日
+        WeekHeaderClass : "week-header",       //日历头部的星期块的样式class
+        dateDivClass : "date-div"           //日历主体部分的日期样式class
     }
 })(jQuery,window,document);
