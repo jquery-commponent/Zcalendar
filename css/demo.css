@@ -1,7 +1,10 @@
 #calendarBody{
-    width:800px;
-    height:600px;
+    /*width:800px;*/
+    /*height:600px;*/
     background: #ecd100;
     display: flex;
 
+}
+.week-header{
+    background: #fff;
 }

@@ -32,44 +32,51 @@
                 $calendar.css({
                     display : "flex"
                 });
-
-                if($this.ops.calendarWeekHeaderHeight){
-                    var calendarWeekHeaderHeight = $this.ops.calendarWeekHeaderHeight;
-                }else{
-                    var calendarWeekHeaderHeight = calendarHeight/11 +"px";
-                }
-
-                for(var i=1;i<8;i++){
-                    var weekDiv = "<div id='week-" + i + "' style='width:" + calendarWidth/7 + "px;'></div>";
-                    var weekHeader = "<div style='width:100%;height:"+ calendarWeekHeaderHeight +"; text-align: center;line-height: "+ calendarWeekHeaderHeight +"; '>星期"+ i +"</div>"
+                //设置日历头部的星期栏
+                for(var i=1;i<=7;i++){
+                    var weekDiv = "<div id='week-" + i + "'></div>";
+                    var weekHeader = "<div class='"+ $this.ops.WeekHeaderClass +"'>星期"+ i +"</div>";
                     $calendar.append(weekDiv);
                     $calendar.find("#week-"+i).append(weekHeader);
                 }
+                //插入日历主体信息
+                $this._fillingDate();
             }else if($this.ops.calendarDirection == "horizontal"){
                 $calendar.css({
                     display : "flex",
                     flexDirection : "column "
                 });
-
-                if($this.ops.calendarWeekHeaderHeight){
-                    var calendarWeekHeaderHeight = $this.ops.calendarWeekHeaderHeight;
-                }else{
-                    var calendarWeekHeaderHeight = calendarHeight/11 +"px";
-                }
-
-                for(var i=1;i<8;i++){
-                    var weekDiv = "<div id='week-" + i + "' style='height:" + calendarHeight/7 + "px;'></div>";
-                    var weekHeader = "<div style='width:"+ calendarWeekHeaderHeight +";height:100%; text-align:center;line-height:"+ calendarHeight/7 +"px '>星期"+ i +"</div>"
+                //设置日历头部的星期栏
+                for(var i=1;i<=7;i++){
+                    var weekDiv = "<div id='week-" + i + "'></div>";
+                    var weekHeader = "<div class='"+ $this.ops.WeekHeaderClass +"'>星期"+ i +"</div>";
                     $calendar.append(weekDiv);
                     $calendar.find("#week-"+i).append(weekHeader);
                 }
-
+                //插入日历主体信息
+                $this._fillingDate();
             }
-
-
-
         },
 
+        _fillingDate : function(){
+            var $this = this;
+            var y = $this.whatDay;
+            console.log(y);
+            for(var i=1; i<y; i++){
+                var dateDiv = "<div>0</div>";
+                $this.$element.find($this.ops.calendarBody).find("#week-"+i).append(dateDiv);
+            }
+            for(var k=1; k<=$this.monthDay[$this.Month-1]; k++){
+                console.log(k);
+                var dateDiv = "<div>"+ k +"</div>";
+                $this.$element.find($this.ops.calendarBody).find("#week-"+y).append(dateDiv);
+                if(y==7){
+                    y=1;
+                }else{
+                    y++;
+                }
+            }
+        },
         /**
          * @private
          * 初始化各项参数
@@ -105,7 +112,7 @@
             }else{
                 var date = new Date();
                 $this.Year = $this.nowYear = date.getFullYear();
-                $this.Month = $this.nowMonth = date.getMonth();
+                $this.Month = $this.nowMonth = date.getMonth()+1;
                 $this.nowDay = date.getDate();
             }
         },
@@ -165,6 +172,6 @@
         nowDate : "" ,                      //日历中显示的当前日期
         calendarDirection : "vertical",             //日历显示方向
         calendarBody : "#calendarBody",   //日历主体展示部分容器
-        calendarWeekHeaderHeight : ""       //日历头部的星期块的高度
+        WeekHeaderClass : "week-header"       //日历头部的星期块的样式
     }
 })(jQuery,window,document);
