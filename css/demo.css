@@ -5,6 +5,16 @@
     /*display: flex;*/
 
 /*}*/
+#calendar{
+    width: 780px;
+    font-size: 0;
+}
+#calendarHeader{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 12px;
+}
 .week-header{
     width: 100px;
     height: 50px;
@@ -12,6 +22,7 @@
     background: #9fc5e8;
     text-align: center;
     line-height: 50px;
+    font-size: 12px;
 }
 .date-div{
     width: 100px;
@@ -22,4 +33,5 @@
     border: 1px solid #eee;
     text-align: center;
     line-height: 50px;
+    font-size: 12px;
 }

@@ -13,50 +13,166 @@
          */
         init : function(){
             var $this = this;
+            //初始化数据
             $this._initType();
             console.log($this.nowYear+"----"+$this.nowMonth+"-----"+$this.nowDay);
+            console.log($this.Year+"----"+$this.Month);
             console.log($this.whatDay);
             console.log($this.monthDay);
+            //展示日历
             $this.calendarShow();
         },
 
         /**
          * 日历展示
+         * _fillingWeek  头部星期信息填充
+         * _fillingHeader 头部年月信息填充
+         * _fillingDate  日历主题信息填充
          */
         calendarShow : function(){
             var $this = this;
+            $this._whatDay();
+            //插入头部星期信息
+            $this._fillingWeek();
+            //插入头部年月信息
+            $this._fillingHeader();
+            //插入日历主体信息
+            $this._fillingDate();
+
+        },
+        /**
+         * 点击上个月按钮的事件
+         * lastMonthBtn如果用户设置了，那就将事件绑定到lastMonthBtn上
+         * 设置年月
+         * 清空日历
+         * 填充日历
+         */
+        lastMonth : function(){
+            var $this = this;
+            if($this.ops.lastMonthBtn){
+                var $lastMonthBtn = $this.$element.find($this.ops.lastMonthBtn);
+                $lastMonthBtn.on("click",function () {
+                    if($this.Month > 1){
+                        //将月数减一
+                        $this.Month--;
+                    }else{
+                        //将月设置为12月，将年数减一年
+                        $this.Month = 12;
+                        $this.Year--;
+                        //判断一下这个年是否是闰年
+                        $this._isLeap();
+                    }
+                    $this.$element.find(".week").empty();
+                    $this.calendarShow();
+                });
+            }
+        },
+        /**
+         * 点击下个月按钮的事件
+         * nextMonthBtn如果用户设置了，那就将事件绑定到nextMonthBtn上
+         * 设置年月
+         * 清空日历
+         * 填充日历
+         */
+        nextMonth : function(){
+            var $this = this;
+            if($this.ops.nextMonthBtn){
+                var $nextMonthBtn = $this.$element.find($this.ops.nextMonthBtn);
+                $nextMonthBtn.on("click",function () {
+                    if($this.Month < 12){
+                        //将月数减一
+                        $this.Month++;
+                    }else{
+                        //将月设置为12月，将年数减一年
+                        $this.Month = 1;
+                        $this.Year++;
+                        //判断一下这个年是否是闰年
+                        $this._isLeap();
+                    }
+                    $this.$element.find(".week").empty();
+                    $this.calendarShow();
+                });
+            }
+        },
+        /**
+         * 点击上一年按钮的事件
+         * lastYearBtn如果用户设置了，那就将事件绑定到lastYearBtn上
+         * 设置年
+         * 清空日历
+         * 填充日历
+         */
+        lastYear : function(){
+            var $this = this;
+            if($this.ops.lastYearBtn){
+                var $lastYearBtn = $this.$element.find($this.ops.lastYearBtn);
+                $lastYearBtn.on("click",function () {
+                    //年份减一
+                    $this.Year--;
+                    //判断闰年
+                    $this._isLeap();
+
+                    $this.$element.find(".week").empty();
+                    $this.calendarShow();
+                });
+            }
+        },
+        /**
+         * 点击下一年按钮的事件
+         * nextYearBtn如果用户设置了，那就将事件绑定到nextYearBtn上
+         * 设置年
+         * 清空日历
+         * 填充日历
+         */
+        nextYear : function(){
+            var $this = this;
+            if($this.ops.nextYearBtn){
+                var $nextYearBtn = $this.$element.find($this.ops.nextYearBtn);
+                $nextYearBtn.on("click",function () {
+                    //年份加一
+                    $this.Year++;
+                    //判断闰年
+                    $this._isLeap();
+
+                    $this.$element.find(".week").empty();
+                    $this.calendarShow();
+                });
+            }
+        },
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------+
+        //------------------------------------------------------------------------三八线------------------------------------------------------------------------------+
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------+
+        /**TODO
+         * @private
+         * 填充日历头部的星期信息
+         * calendarDirection判断日历是横向显示的还是纵向显示的，vertical表示横向显示，horizontal表示纵向显示
+         * 星期 1至7 分别 对应 id为 week-1至week-7，暂时先定死前缀week后期可以让用户自己设置前缀
+         * 设置星期块的样式类为WeekHeaderClass
+         */
+        _fillingWeek : function () {
+            var $this = this;
             var $calendar = $this.$element.find($this.ops.calendarBody);
-            if($this.ops.calendarDirection == "vertical"){
+            if(this.ops.calendarDirection == "vertical"){
+                //横向
                 $calendar.css({
                     display : "flex"
                 });
-                //设置日历头部的星期栏
-                for(var i=1;i<=7;i++){
-                    var weekDiv = "<div id='week-" + i + "'></div>";
-                    var weekHeader = "<div class='"+ $this.ops.WeekHeaderClass +"'>星期"+ i +"</div>";
-                    $calendar.append(weekDiv);
-                    $calendar.find("#week-"+i).append(weekHeader);
-                }
-                //插入日历主体信息
-                $this._fillingDate();
-                $this._fillingHeader();
             }else if($this.ops.calendarDirection == "horizontal"){
+                //纵向
                 $calendar.css({
                     display : "flex",
                     flexDirection : "column "
                 });
-                //设置日历头部的星期栏
-                for(var i=1;i<=7;i++){
-                    var weekDiv = "<div id='week-" + i + "'></div>";
-                    var weekHeader = "<div class='"+ $this.ops.WeekHeaderClass +"'>星期"+ i +"</div>";
-                    $calendar.append(weekDiv);
-                    $calendar.find("#week-"+i).append(weekHeader);
-                }
-                //插入日历主体信息
-                $this._fillingDate();
-                $this._fillingHeader();
+            }
+            //设置日历头部的星期栏
+            for(var i=1;i<=7;i++){
+                var weekDiv = "<div id='week-" + i + "' class='week'></div>";
+                var weekHeader = "<div class='"+ $this.ops.WeekHeaderClass +"'>星期"+ i +"</div>";
+                $calendar.append(weekDiv);
+                $calendar.find("#week-"+i).append(weekHeader);
             }
         },
+
         /**
          * @private
          * 填充主体部分的日历
@@ -83,11 +199,18 @@
         /**
          * @private
          * 头部信息的显示
+         * isHeader判断日历是否显示头部的年月信息
+         * 将年信息填充到yearItem中
+         * 将月信息填充到monthItem中
          */
         _fillingHeader : function(){
             var $this = this;
-            var $header = $this.$element.find($this.ops.calendarHeader);
-            $header.text($this.Year+"年"+$this.Month+"月");
+            if($this.ops.yearItem){
+                $this.$element.find($this.ops.yearItem).text($this.Year+"年");
+            }
+            if($this.ops.monthItem){
+                $this.$element.find($this.ops.monthItem).text($this.Month+"月");
+            }
         },
         /**
          * @private
@@ -99,10 +222,16 @@
             $this._getNowDay();
             //判断当前年份是闰年还是非闰年
             $this._isLeap();
-            //判断当前展示的月在日历中是星期几
+            //判断当前展示的月的第一天在日历中是星期几
             $this._whatDay();
             //计算当前展示的月在日历中显示几行
             $this._whatRow();
+
+            //绑定事件
+            $this.lastMonth();
+            $this.nextMonth();
+            $this.lastYear();
+            $this.nextYear();
         },
 
         /**
@@ -185,8 +314,16 @@
         nowDate : "" ,                      //日历中显示的当前日期
         calendarDirection : "vertical",             //日历显示方向
         calendarBody : "#calendarBody",   //日历主体展示部分容器
-        calendarHeader : "#calendarHeader", //日历的头部信息部分，包括当前展示时间的年月日
         WeekHeaderClass : "week-header",       //日历头部的星期块的样式class
-        dateDivClass : "date-div"           //日历主体部分的日期样式class
+        dateDivClass : "date-div",           //日历主体部分的日期样式class
+
+        yearItem : "",      //日历显示在头部的年信息
+        monthItem : "",    //日历显示在头部的月信息
+
+        lastMonthBtn : "",  //上个月按钮
+        nextMonthBtn : "",   //下个月按钮
+
+        lastYearBtn : "",   //上一年按钮
+        nextYearBtn : ""    //下一年按钮
     }
 })(jQuery,window,document);

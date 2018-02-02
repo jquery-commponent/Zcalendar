@@ -10,14 +10,27 @@
 <body>
     <div id="calendar">
         <div id="calendarHeader">
-
+            <div id="last-year">上一年</div>
+            <div id="last-month">上个月</div>
+            <div id="year"></div>
+            <div id="month"></div>
+            <div id="next-month">下个月</div>
+            <div id="next-year">下一年</div>
         </div>
         <div id="calendarBody"></div>
+
     </div>
 </body>
 <script>
     $("#calendar").calendar({
-        WeekHeaderClass : "week-header"
+        WeekHeaderClass : "week-header",
+        yearItem : "#year",
+        monthItem : "#month",
+        lastMonthBtn : "#last-month",
+        nextMonthBtn : "#next-month",
+        lastYearBtn : "#last-year",
+        nextYearBtn : "#next-year"
+
     });
 </script>
 </html>
